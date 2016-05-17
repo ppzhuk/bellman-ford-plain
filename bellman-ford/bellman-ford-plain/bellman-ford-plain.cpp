@@ -23,6 +23,15 @@ struct edge {
 	int a, b, cost;
 };
 
+// -------------------------------------
+// Последовательный вариант
+// -------------------------------------
+
+/* n - количество вершин
+m - количество ребер
+v - стартовая вершина
+e - список ребер
+*/
 string BFplain(int n, int m, vector<edge> const& e, int v) {
 	vector<int> d(n, INF);
 	d[v] = 0;
@@ -43,6 +52,10 @@ string BFplain(int n, int m, vector<edge> const& e, int v) {
 	ss << endl;
 	return ss.str();
 }
+
+// -------------------------------------
+// Потоки
+// -------------------------------------
 
 vector<int> * dist;
 vector<edge> const* edgs;
@@ -86,19 +99,26 @@ string BFThreads(int n, int m, vector<edge> const& e, int v, int thrds_num) {
 	edgs = &e;
 	dist = new vector<int>(n, INF);
 	(*dist)[v] = 0;
+	// потоков не может быть больше ребер
 	if (thrds_num > m) {
 		thrds_num = m;
 	}
 
 	boost::barrier barrier(thrds_num);
+
+	// создаем пул потоков
 	HANDLE* thrd_pool = new HANDLE[thrds_num];
 
 	thrd_param *p;
+
+	// определяем какую часть списка ребер будет обрабатывать один поток
 	int edges_per_thrd = e.size() / thrds_num;
 	int edges_left = e.size() % thrds_num;
 	int from = 0;
 	int to = edges_per_thrd + edges_left - 1;
+
 	for (int i = 0; i < thrds_num; ++i) {
+		// задаем параметры потока и запускаем тред
 		p = new thrd_param(n, from, to, &barrier);
 		thrd_pool[i] = CreateThread(NULL, 0, &thrd_func, p, 0, NULL);
 		from = to;
@@ -117,6 +137,10 @@ string BFThreads(int n, int m, vector<edge> const& e, int v, int thrds_num) {
 	ss << endl;
 	return ss.str();
 }
+
+// -------------------------------------
+// OpenMP
+// -------------------------------------
 
 string BFopenMP(const int n, const  int m, vector<edge> const& e, int v, int thrds_num) {
 	vector<int> d(n, INF);
