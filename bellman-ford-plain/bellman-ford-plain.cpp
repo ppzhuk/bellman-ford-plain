@@ -10,6 +10,10 @@
 #include <algorithm>
 #include <ctime>
 #include <Windows.h>
+#include <boost/thread.hpp>
+#include <boost/thread/barrier.hpp>
+#include <omp.h>
+
 
 using namespace std;
 
@@ -22,139 +26,132 @@ struct edge {
 string BFplain(int n, int m, vector<edge> const& e, int v) {
 	vector<int> d(n, INF);
 	d[v] = 0;
-	int x;
 	for (int i = 0; i < n; ++i) {
-		x = -1;
 		for (int j = 0; j < m; ++j) {
 			if (d[e[j].a] < INF) {
 				if (d[e[j].b] > d[e[j].a] + e[j].cost) {
 					d[e[j].b] = max(-INF, d[e[j].a] + e[j].cost);
-					x = e[j].b;
 				}
 			}
 		}
 	}
 
 	stringstream ss;
-	if (x == -1)
-		for (int i = 0; i < n; ++i) {
-			ss << d[i] << " ";
-		}
-	else {
-		++v;
-		ss << "Graph has negative cycle from " << v;
+	for (int i = 0; i < n; ++i) {
+		ss << d[i] << " ";
 	}
 	ss << endl;
 	return ss.str();
 }
 
-
-
-void count_incoming_edges(vector<edge> const& e, vector<vector<edge>> & into, int m) {
-	for (int j = 0; j < m; ++j) {
-		into[e[j].b].push_back(e[j]);
-	}
-}
-
-vector<int> *dist;
-int minDist;
+vector<int> * dist;
+vector<edge> const* edgs;
 
 struct thrd_param {
-	HANDLE mutex;
-	int vertex, from, to;
-	vector<vector<edge>> *into;
+	int n, from, to;
+	boost::barrier *barrier;
 
-	thrd_param(HANDLE  m, int f, int t, int v, vector<vector<edge>> *income_edges) {
-		mutex = m;
-		vertex = v;
+	thrd_param(int num, int f, int t, boost::barrier *bar) {
+		n = num;
 		from = f;
 		to = t;
-		into = income_edges;
+		barrier = bar;
 	}
 };
 
 DWORD WINAPI thrd_func(LPVOID lpParam)
 {
 	thrd_param p = *(thrd_param*)lpParam;
-	int v = p.vertex;
-	vector<vector<edge>> * into = p.into;
-	for (int i = p.from; i <= p.to; ++i) {
-		int a_dist = (*dist)[(*into)[p.vertex][i].a];
-		if (a_dist < INF) {
-			int d = (*into)[p.vertex][i].cost + a_dist;
-			WaitForSingleObject(p.mutex, INFINITE);
-			minDist = min(minDist, d);
-			ReleaseMutex(p.mutex);
+	int n = p.n;
+	int from = p.from;
+	int to = p.to;
+	boost::barrier *barrier = p.barrier;
+
+	for (int i = 0; i < n; ++i) {
+		for (int j = from; j <= to; ++j) {
+			if ((*dist)[(*edgs)[j].a] < INF) {
+				if ((*dist)[(*edgs)[j].b] > (*dist)[(*edgs)[j].a] + (*edgs)[j].cost) {
+					(*dist)[(*edgs)[j].b] = max(-INF, (*dist)[(*edgs)[j].a] + (*edgs)[j].cost);
+				}
+			}
 		}
+		(*barrier).wait();
 	}
+
 	ExitThread(0);
 }
 
-// 1. Выяснить почему и где тормозят бамбуки
-// 2. Заоптимизить ||
-// 3. ?? сделать || через вектор ребер?
-// 4. Комменты, отчет
+string BFThreads(int n, int m, vector<edge> const& e, int v, int thrds_num) {
 
-string BFThreads(int n, int m, vector<edge> const& e, int v, int thrds_num, vector<vector<edge>> & into) {
+	edgs = &e;
 	dist = new vector<int>(n, INF);
 	(*dist)[v] = 0;
-	HANDLE mutex = CreateMutex(NULL, false, NULL);
-	bool changed = false;
-	for (int i = 0; i < n; ++i) {
-		changed = false;
-		for (int j = 0; j < n; ++j) {
-			minDist = (*dist)[j];
+	if (thrds_num > m) {
+		thrds_num = m;
+	}
 
-			//-----parrallel part------
-			if (into[j].size() == 0)
-				continue;
-			int threads_number = thrds_num;
-			int edges_per_thrd = into[j].size() / threads_number;
-			int edges_left     = into[j].size() % threads_number;
+	boost::barrier barrier(thrds_num);
+	HANDLE* thrd_pool = new HANDLE[thrds_num];
 
-			while (edges_per_thrd == 0 && threads_number > 1) {
-				threads_number /= 2;
-				edges_per_thrd = into[j].size() / threads_number;
-				edges_left = into[j].size() % threads_number;
-			}
+	thrd_param *p;
+	int edges_per_thrd = e.size() / thrds_num;
+	int edges_left = e.size() % thrds_num;
+	int from = 0;
+	int to = edges_per_thrd + edges_left - 1;
+	for (int i = 0; i < thrds_num; ++i) {
+		p = new thrd_param(n, from, to, &barrier);
+		thrd_pool[i] = CreateThread(NULL, 0, &thrd_func, p, 0, NULL);
+		from = to;
+		to += edges_per_thrd;
+	}
 
-			HANDLE* thrd_pool = new HANDLE[threads_number];
-			thrd_param *p = new thrd_param(&mutex, 0, (edges_per_thrd + edges_left - 1), j, &into);
-			thrd_pool[0] = CreateThread(NULL, 0, &thrd_func, p, 0, NULL);
-
-			for (int k = 1; k < threads_number; ++k) {
-				p = new thrd_param(&mutex, (p->to)+1, (p->to) + edges_per_thrd, j, &into);
-				thrd_pool[k] = CreateThread(NULL, 0, &thrd_func, p, 0, NULL);
-			}
-
-			WaitForMultipleObjects(threads_number, thrd_pool, true, INFINITE);
-			//--------------------------
-
-			if (minDist < (*dist)[j]) {
-				(*dist)[j] = minDist;
-				changed = true;
-			}
-		}
+	WaitForMultipleObjects(thrds_num, thrd_pool, true, INFINITE);
+	for (int i = 0; i < thrds_num; i++) {
+		CloseHandle(thrd_pool[i]);
 	}
 
 	stringstream ss;
-	if (!changed)
-		for (int i = 0; i < n; ++i) {
-			ss << (*dist)[i] << " ";
-		}
-	else {
-		++v;
-		ss << "Graph has negative cycle from " << v;
+	for (int i = 0; i < n; ++i) {
+		ss << (*dist)[i] << " ";
 	}
 	ss << endl;
 	return ss.str();
 }
 
-string BFopenMP(int n, int m, vector<edge> const& e, int v, int threads_number) {
-	return "";
+string BFopenMP(const int n, const  int m, vector<edge> const& e, int v, int thrds_num) {
+	vector<int> d(n, INF);
+	d[v] = 0;
+	if (thrds_num > m) {
+		thrds_num = m;
+	}
+	const int edges_per_thrd = e.size() / thrds_num + e.size() % thrds_num;
+
+	omp_set_num_threads(thrds_num);
+	int i;
+	#pragma omp parallel private (i) shared (d, e)
+	{
+		for (i = 0; i < n; ++i) {
+			#pragma omp for schedule(dynamic, edges_per_thrd)
+			for (int j = 0; j < m; ++j) {
+				if (d[e[j].a] < INF) {
+					if (d[e[j].b] > d[e[j].a] + e[j].cost) {
+						d[e[j].b] = max(-INF, d[e[j].a] + e[j].cost);
+					}
+				}
+			}	
+		}
+	}
+	
+
+	stringstream ss;
+	for (int i = 0; i < n; ++i) {
+		ss << d[i] << " ";
+	}
+	ss << endl;
+	return ss.str();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	int n, m, v;
 	vector<edge> e;
@@ -162,7 +159,7 @@ int main()
 	cin >> n;
 	cout << "m=";
 	cin >> m;
-	cout << "a b c" << endl;
+	cout << "a b cost" << endl;
 	for (int i = 0; i < m; ++i) {
 		struct edge current_edge;
 		cin >> current_edge.a >> current_edge.b >> current_edge.cost;
@@ -189,7 +186,6 @@ int main()
 
 	string res = "";
 	unsigned int start_time;
-	vector<vector<edge>> into(n);
 
 	switch (mode) {
 	case 1:
@@ -197,9 +193,8 @@ int main()
 		res = BFplain(n, m, e, v);
 		break;
 	case 2:
-		count_incoming_edges(e, into, m);
 		start_time = clock();
-		res = BFThreads(n, m, e, v, threads_number, into);
+		res = BFThreads(n, m, e, v, threads_number);
 		break;
 	case 3:
 		start_time = clock();
@@ -214,7 +209,7 @@ int main()
 	unsigned int work_time = end_time - start_time;
 	cout << res;
 	cout << "working time: " << work_time << endl;
-			
+
 	system("pause");
 	return 0;
 }

@@ -61,51 +61,6 @@ namespace UnitTest1
 
 		}
 
-		TEST_METHOD(Test2)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\2_in.txt");
-			read_out_data("..\\tests\\2_out.txt");
-			Assert::AreEqual(BFplain(n, m, e, v), expected);
-
-		}
-
-		TEST_METHOD(Test3_neg_cycle)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\3_neg_cycle_in.txt");
-			read_out_data("..\\tests\\3_neg_cycle_out.txt");
-			Assert::AreEqual(BFplain(n, m, e, v), expected);
-
-		}
-
-		TEST_METHOD(Test4)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\4_in.txt");
-			read_out_data("..\\tests\\4_out.txt");
-			Assert::AreEqual(BFplain(n, m, e, v), expected);
-
-		}
-
-		TEST_METHOD(Test5_neg_cycle)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\5_neg_cycle_in.txt");
-			read_out_data("..\\tests\\5_neg_cycle_out.txt");
-			Assert::AreEqual(BFplain(n, m, e, v), expected);
-
-		}
-
-		TEST_METHOD(Test100)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\100_in.txt");
-			read_out_data("..\\tests\\100_out.txt");
-			Assert::AreEqual(BFplain(n, m, e, v), expected);
-
-		}
-
 		TEST_METHOD(Test1k)
 		{
 			vipe_data();
@@ -124,41 +79,6 @@ namespace UnitTest1
 
 		}
 
-		TEST_METHOD(Test100_neg_cycle)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\100_neg_cycle_in.txt");
-			read_out_data("..\\tests\\100_neg_cycle_out.txt");
-			Assert::AreEqual(BFplain(n, m, e, v), expected);
-
-		}
-
-		TEST_METHOD(Test1k_neg_cycle)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\1k_neg_cycle_in.txt");
-			read_out_data("..\\tests\\1k_neg_cycle_out.txt");
-			Assert::AreEqual(BFplain(n, m, e, v), expected);
-
-		}
-
-		TEST_METHOD(Test3k_neg_cycle)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\3k_neg_cycle_in.txt");
-			read_out_data("..\\tests\\3k_neg_cycle_out.txt");
-			Assert::AreEqual(BFplain(n, m, e, v), expected);
-
-		}
-
-		TEST_METHOD(Test100_full)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\100_full_in.txt");
-			read_out_data("..\\tests\\100_full_out.txt");
-			Assert::AreEqual(BFplain(n, m, e, v), expected);
-
-		}
 		TEST_METHOD(Test500_semifull)
 		{
 			vipe_data();
@@ -179,63 +99,25 @@ namespace UnitTest1
 			read_in_data("..\\tests\\1_in.txt");
 			read_out_data("..\\tests\\1_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
+			Assert::AreEqual(BFThreads(n, m, e, v, 2), expected);
 		}
 
-		TEST_METHOD(Threads2Test2)
+		TEST_METHOD(Threads3Test1)
 		{
 			vipe_data();
-			read_in_data("..\\tests\\2_in.txt");
-			read_out_data("..\\tests\\2_out.txt");
+			read_in_data("..\\tests\\1_in.txt");
+			read_out_data("..\\tests\\1_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
-
+			Assert::AreEqual(BFThreads(n, m, e, v, 3), expected);
 		}
 
-		TEST_METHOD(Threads2Test3_neg_cycle)
+		TEST_METHOD(Threads4Test1)
 		{
 			vipe_data();
-			read_in_data("..\\tests\\3_neg_cycle_in.txt");
-			read_out_data("..\\tests\\3_neg_cycle_out.txt");
+			read_in_data("..\\tests\\1_in.txt");
+			read_out_data("..\\tests\\1_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
-
-		}
-
-		TEST_METHOD(Threads2Test4)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\4_in.txt");
-			read_out_data("..\\tests\\4_out.txt");
-			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
-
-		}
-
-		TEST_METHOD(Threads2Test5_neg_cycle)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\5_neg_cycle_in.txt");
-			read_out_data("..\\tests\\5_neg_cycle_out.txt");
-			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
-
-		}
-
-		TEST_METHOD(Threads2Test100)
-		{
-			vipe_data();
-			read_in_data("..\\tests\\100_in.txt");
-			read_out_data("..\\tests\\100_out.txt");
-			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
-
+			Assert::AreEqual(BFThreads(n, m, e, v, 4), expected);
 		}
 
 		TEST_METHOD(Threads2Test1k)
@@ -244,8 +126,63 @@ namespace UnitTest1
 			read_in_data("..\\tests\\1k_in.txt");
 			read_out_data("..\\tests\\1k_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
+			
+			Assert::AreEqual(BFThreads(n, m, e, v, 2), expected);
+
+		}
+
+		TEST_METHOD(Threads3Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFThreads(n, m, e, v, 3), expected);
+
+		}
+
+		TEST_METHOD(Threads4Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFThreads(n, m, e, v, 4), expected);
+
+		}
+
+		TEST_METHOD(Threads5Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFThreads(n, m, e, v, 5), expected);
+
+		}
+
+		TEST_METHOD(Threads8Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFThreads(n, m, e, v, 8), expected);
+
+		}
+
+		TEST_METHOD(Threads9Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFThreads(n, m, e, v, 9), expected);
 
 		}
 
@@ -255,62 +192,79 @@ namespace UnitTest1
 			read_in_data("..\\tests\\3k_in.txt");
 			read_out_data("..\\tests\\3k_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
+			Assert::AreEqual(BFThreads(n, m, e, v, 2), expected);
 
 		}
 
-		TEST_METHOD(Threads2Test100_neg_cycle)
+		TEST_METHOD(Threads3Test3k)
 		{
 			vipe_data();
-			read_in_data("..\\tests\\100_neg_cycle_in.txt");
-			read_out_data("..\\tests\\100_neg_cycle_out.txt");
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
+			Assert::AreEqual(BFThreads(n, m, e, v, 3), expected);
 
 		}
 
-		TEST_METHOD(Threads2Test1k_neg_cycle)
+		TEST_METHOD(Threads4Test3k)
 		{
 			vipe_data();
-			read_in_data("..\\tests\\1k_neg_cycle_in.txt");
-			read_out_data("..\\tests\\1k_neg_cycle_out.txt");
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
+			Assert::AreEqual(BFThreads(n, m, e, v, 4), expected);
 
 		}
 
-		TEST_METHOD(Threads2Test3k_neg_cycle)
+		TEST_METHOD(Threads5Test3k)
 		{
 			vipe_data();
-			read_in_data("..\\tests\\3k_neg_cycle_in.txt");
-			read_out_data("..\\tests\\3k_neg_cycle_out.txt");
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
+			Assert::AreEqual(BFThreads(n, m, e, v, 5), expected);
 
 		}
 
-		TEST_METHOD(Threads2Test100_full)
+		TEST_METHOD(Threads8Test3k)
 		{
 			vipe_data();
-			read_in_data("..\\tests\\100_full_in.txt");
-			read_out_data("..\\tests\\100_full_out.txt");
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
+			Assert::AreEqual(BFThreads(n, m, e, v, 8), expected);
 
 		}
+
+		TEST_METHOD(Threads9Test3k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFThreads(n, m, e, v, 9), expected);
+
+		}
+
 		TEST_METHOD(Threads2Test500_semifull)
 		{
 			vipe_data();
 			read_in_data("..\\tests\\500_semifull_in.txt");
 			read_out_data("..\\tests\\500_semifull_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 2, into), expected);
+			
+			Assert::AreEqual(BFThreads(n, m, e, v, 2), expected);
+
+		}
+
+		TEST_METHOD(Threads3Test500_semifull)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\500_semifull_in.txt");
+			read_out_data("..\\tests\\500_semifull_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFThreads(n, m, e, v, 3), expected);
 
 		}
 
@@ -320,8 +274,19 @@ namespace UnitTest1
 			read_in_data("..\\tests\\500_semifull_in.txt");
 			read_out_data("..\\tests\\500_semifull_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 4, into), expected);
+			
+			Assert::AreEqual(BFThreads(n, m, e, v, 4), expected);
+
+		}
+
+		TEST_METHOD(Threads5Test500_semifull)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\500_semifull_in.txt");
+			read_out_data("..\\tests\\500_semifull_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFThreads(n, m, e, v, 5), expected);
 
 		}
 
@@ -331,8 +296,19 @@ namespace UnitTest1
 			read_in_data("..\\tests\\500_semifull_in.txt");
 			read_out_data("..\\tests\\500_semifull_out.txt");
 			vector<vector<edge>> into(n);
-			count_incoming_edges(e, into, m);
-			Assert::AreEqual(BFThreads(n, m, e, v, 8, into), expected);
+			
+			Assert::AreEqual(BFThreads(n, m, e, v, 8), expected);
+
+		}
+
+		TEST_METHOD(Threads9Test500_semifull)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\500_semifull_in.txt");
+			read_out_data("..\\tests\\500_semifull_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFThreads(n, m, e, v, 9), expected);
 
 		}
 	};
@@ -341,13 +317,223 @@ namespace UnitTest1
 	{
 	public:
 
-		/*TEST_METHOD(OpenMPTest1)
+		TEST_METHOD(OMP2Test1)
 		{
-		vipe_data();
-		read_in_data("..\\tests\\1_in.txt");
-		read_out_data("..\\tests\\1_out.txt");
-		Assert::AreEqual(BFplain(n, m, e, v), expected);
+			vipe_data();
+			read_in_data("..\\tests\\1_in.txt");
+			read_out_data("..\\tests\\1_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFopenMP(n, m, e, v, 2), expected);
+		}
 
-		}*/
+		TEST_METHOD(OMP3Test1)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1_in.txt");
+			read_out_data("..\\tests\\1_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFopenMP(n, m, e, v, 3), expected);
+		}
+
+		TEST_METHOD(OMP4Test1)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1_in.txt");
+			read_out_data("..\\tests\\1_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFopenMP(n, m, e, v, 4), expected);
+		}
+
+		TEST_METHOD(OMP2Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 2), expected);
+
+		}
+
+		TEST_METHOD(OMP3Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 3), expected);
+
+		}
+
+		TEST_METHOD(OMP4Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 4), expected);
+
+		}
+
+		TEST_METHOD(OMP5Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 5), expected);
+
+		}
+
+		TEST_METHOD(OMP8Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 8), expected);
+
+		}
+
+		TEST_METHOD(OMP9Test1k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\1k_in.txt");
+			read_out_data("..\\tests\\1k_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 9), expected);
+
+		}
+
+		TEST_METHOD(OMP2Test3k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFopenMP(n, m, e, v, 2), expected);
+
+		}
+
+		TEST_METHOD(OMP3Test3k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFopenMP(n, m, e, v, 3), expected);
+
+		}
+
+		TEST_METHOD(OMP4Test3k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFopenMP(n, m, e, v, 4), expected);
+
+		}
+
+		TEST_METHOD(OMP5Test3k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFopenMP(n, m, e, v, 5), expected);
+
+		}
+
+		TEST_METHOD(OMP8Test3k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFopenMP(n, m, e, v, 8), expected);
+
+		}
+
+		TEST_METHOD(OMP9Test3k)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\3k_in.txt");
+			read_out_data("..\\tests\\3k_out.txt");
+			vector<vector<edge>> into(n);
+			Assert::AreEqual(BFopenMP(n, m, e, v, 9), expected);
+
+		}
+
+		TEST_METHOD(OMP2Test500_semifull)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\500_semifull_in.txt");
+			read_out_data("..\\tests\\500_semifull_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 2), expected);
+
+		}
+
+		TEST_METHOD(OMP3Test500_semifull)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\500_semifull_in.txt");
+			read_out_data("..\\tests\\500_semifull_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 3), expected);
+
+		}
+
+		TEST_METHOD(OMP4Test500_semifull)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\500_semifull_in.txt");
+			read_out_data("..\\tests\\500_semifull_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 4), expected);
+
+		}
+
+		TEST_METHOD(OMP5Test500_semifull)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\500_semifull_in.txt");
+			read_out_data("..\\tests\\500_semifull_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 5), expected);
+
+		}
+
+		TEST_METHOD(OMP8Test500_semifull)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\500_semifull_in.txt");
+			read_out_data("..\\tests\\500_semifull_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 8), expected);
+
+		}
+
+		TEST_METHOD(OMP9Test500_semifull)
+		{
+			vipe_data();
+			read_in_data("..\\tests\\500_semifull_in.txt");
+			read_out_data("..\\tests\\500_semifull_out.txt");
+			vector<vector<edge>> into(n);
+
+			Assert::AreEqual(BFopenMP(n, m, e, v, 9), expected);
+
+		}
 	};
 }
